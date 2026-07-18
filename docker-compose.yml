@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+  cloud-android:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        ANDROID_VERSION: "14"
+        SCREEN_WIDTH: 1080
+        SCREEN_HEIGHT: 1920
+    container_name: cloud-android-runner
+    environment:
+      - ANDROID_VERSION=14
+      - SCREEN_WIDTH=1080
+      - SCREEN_HEIGHT=1920
+      - VNC_PASSWORD=
+      - ENABLE_ADB=true
+    ports:
+      - "6080:6080"   # noVNC web interface
+      - "5555:5555"   # ADB server
+    volumes:
+      - ./apks:/workspace/apks
+      - android-data:/opt/android-sdk
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6080"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  android-data:
