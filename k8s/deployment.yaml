@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloud-android-runner
+  labels:
+    app: cloud-android-runner
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: cloud-android-runner
+  template:
+    metadata:
+      labels:
+        app: cloud-android-runner
+    spec:
+      containers:
+      - name: android
+        image: cloud-android-runner:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 6080
+          name: vnc
+        - containerPort: 5555
+          name: adb
+        env:
+        - name: ANDROID_VERSION
+          value: "14"
+        - name: SCREEN_WIDTH
+          value: "1080"
+        - name: SCREEN_HEIGHT
+          value: "1920"
+        - name: ENABLE_ADB
+          value: "true"
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "1000m"
+          limits:
+            memory: "4Gi"
+            cpu: "2000m"
